@@ -1,0 +1,120 @@
+<%- include('../partials/header') %>
+
+<div class="page-hero">
+  <span class="tag">Contact</span>
+  <h1>Let's Build Something Great</h1>
+  <p>Tell us about your project and we'll get back to you within 24 hours with a tailored proposal.</p>
+</div>
+
+<section class="section" style="background:var(--surface)">
+  <div class="inner">
+    <div class="contact-layout">
+
+      <!-- Info -->
+      <div class="reveal">
+        <div class="info-top">
+          <h3>Get in touch</h3>
+          <p>Fill out the form and we'll respond within 24 hours.</p>
+          <div class="det"><div class="det-icon">📍</div><div><div class="det-label">Location</div><div class="det-val">Egypt</div></div></div>
+          <div class="det"><div class="det-icon">⚡</div><div><div class="det-label">Response Time</div><div class="det-val">Within 24 hours</div></div></div>
+          <div class="det"><div class="det-icon">🌐</div><div><div class="det-label">Service</div><div class="det-val">Fully remote</div></div></div>
+          <div class="social-row">
+            <a href="https://www.instagram.com/nexora_100/" target="_blank" class="soc-btn">IG Instagram</a>
+            <a href="https://www.tiktok.com/@nexora_100" target="_blank" class="soc-btn">TT TikTok</a>
+          </div>
+        </div>
+        <div class="process-block">
+          <h4>How it works</h4>
+          <div class="p-step"><div class="p-num">1</div><div><h5>Send Your Request</h5><p>Fill out the form with your project details.</p></div></div>
+          <div class="p-step"><div class="p-num">2</div><div><h5>Get a Proposal</h5><p>We'll send you a plan within 24 hours.</p></div></div>
+          <div class="p-step"><div class="p-num">3</div><div><h5>We Build</h5><p>Sit back while we craft your website.</p></div></div>
+          <div class="p-step"><div class="p-num">4</div><div><h5>Review &amp; Launch</h5><p>Revisions, approval, then go live.</p></div></div>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div class="form-wrap reveal">
+        <div class="form-title">Start Your Project</div>
+        <p class="form-sub">More details = better proposal. Takes about 2 minutes.</p>
+        <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+
+        <form id="cForm" action="https://formspree.io/f/xdazrdqe" method="POST">
+          <input type="hidden" name="_subject" value="New NEXORA Project Request"/>
+          <div class="f-row">
+            <div class="f-group"><label>Full Name</label><input type="text" name="name" placeholder="Your name" required/></div>
+            <div class="f-group"><label>Email Address</label><input type="email" name="email" placeholder="you@email.com" required/></div>
+          </div>
+          <div class="f-group"><label>Project Type</label>
+            <select name="project_type" required>
+              <option value="">Select type...</option>
+              <option>Landing Page</option>
+              <option>Business Website</option>
+              <option>E-commerce</option>
+              <option>Web Application</option>
+            </select>
+          </div>
+          <div class="f-group"><label>Package</label>
+            <div class="pkg-pick">
+              <div class="pkg-opt"><input type="radio" id="p1" name="package" value="البداية (200-500 EGP)" required/><label for="p1"><span class="pkg-emoji">🚀</span><span class="pkg-n">البداية</span><span class="pkg-p">200–500</span></label></div>
+              <div class="pkg-opt"><input type="radio" id="p2" name="package" value="نجاح (500-1000 EGP)"/><label for="p2"><span class="pkg-emoji">💼</span><span class="pkg-n">نجاح</span><span class="pkg-p">500–1000</span></label></div>
+              <div class="pkg-opt"><input type="radio" id="p3" name="package" value="قمة (1000-1500 EGP)"/><label for="p3"><span class="pkg-emoji">👑</span><span class="pkg-n">قمة</span><span class="pkg-p">1000–1500</span></label></div>
+            </div>
+          </div>
+          <div class="f-row">
+            <div class="f-group"><label>Budget</label>
+              <select name="budget"><option>200 – 500 جنيه</option><option>500 – 1000 جنيه</option><option>1000+ جنيه</option></select>
+            </div>
+            <div class="f-group"><label>Preferred Deadline</label><input type="date" name="deadline"/></div>
+          </div>
+          <div class="f-group">
+            <label>Project Details</label>
+            <textarea id="msg" name="message" maxlength="600" placeholder="Tell us about your business and what you'd like your website to achieve..." required></textarea>
+            <div class="char-c"><span id="cc">0</span>/600</div>
+          </div>
+          <button type="submit" class="btn btn-primary submit-btn">Send Request 🚀</button>
+          <div class="form-msg" id="fMsg"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const form   = document.getElementById('cForm');
+  const msgEl  = document.getElementById('msg');
+  const cc     = document.getElementById('cc');
+  const fill   = document.getElementById('progFill');
+  const fields = form.querySelectorAll('input:not([type=radio]):not([type=hidden]),select,textarea');
+
+  msgEl.addEventListener('input', () => { cc.textContent = msgEl.value.length; updateProg(); });
+  fields.forEach(f => f.addEventListener('input', updateProg));
+  form.querySelectorAll('input[type=radio]').forEach(r => r.addEventListener('change', updateProg));
+
+  function updateProg() {
+    let n = 0;
+    fields.forEach(f => { if (f.value.trim()) n++; });
+    if (form.querySelector('input[type=radio]:checked')) n++;
+    fill.style.width = ((n / (fields.length + 1)) * 100) + '%';
+  }
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn  = form.querySelector('button[type=submit]');
+    const fMsg = document.getElementById('fMsg');
+    btn.textContent = '⏳ Sending...'; btn.disabled = true;
+    try {
+      const r = await fetch(form.action, { method:'POST', body: new FormData(form), headers:{ Accept:'application/json' } });
+      if (r.ok) {
+        fMsg.textContent = "✅ Sent! We'll be in touch within 24 hours.";
+        fMsg.className = 'form-msg ok';
+        form.reset(); fill.style.width = '0%'; cc.textContent = '0';
+      } else throw new Error();
+    } catch {
+      fMsg.textContent = '❌ Something went wrong. Please try again.';
+      fMsg.className = 'form-msg err';
+    }
+    btn.textContent = 'Send Request 🚀'; btn.disabled = false;
+  });
+</script>
+
+<%- include('../partials/footer') %>
